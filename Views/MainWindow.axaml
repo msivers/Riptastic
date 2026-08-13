@@ -1,0 +1,176 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Riptastic.ViewModels"
+        xmlns:models="using:Riptastic.Models"
+        x:Class="Riptastic.Views.MainWindow"
+        Width="1024" Height="768"
+        MinWidth="820" MinHeight="640"
+        WindowStartupLocation="CenterScreen"
+        Background="#15171C"
+        Title="Riptastic">
+
+    <DockPanel LastChildFill="True" Margin="0">
+
+        <!-- Header -->
+        <Border DockPanel.Dock="Top" Background="#0F1115" Padding="20,14"
+                BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                    <Border Width="34" Height="34" CornerRadius="8" Background="{DynamicResource AccentBrush}">
+                        <TextBlock Text="⏏" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Riptastic" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Text="Rip a VIDEO_TS folder to MKV / MP4" FontSize="12" Foreground="{DynamicResource MutedBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+                <Button Grid.Column="1" Click="OnOpenSettings" ToolTip.Tip="Settings &amp; dependencies"
+                        VerticalAlignment="Center" Width="38" Height="38" Padding="0"
+                        Background="Transparent" BorderThickness="0">
+                    <TextBlock Text="⚙" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Foreground="{DynamicResource MutedBrush}"/>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Footer: progress + actions -->
+        <Border DockPanel.Dock="Bottom" Background="#0F1115" Padding="20,14"
+                BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="0,1,0,0">
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6" VerticalAlignment="Center" Margin="0,0,16,0">
+                    <TextBlock Text="{Binding StatusText}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
+                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressValue}"
+                                 IsIndeterminate="{Binding IsIndeterminate}" Height="6"/>
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <Button Content="Open output"
+                            IsVisible="{Binding FinishedOk}"
+                            Click="OnOpenOutput" Padding="14,9"/>
+                    <Button Content="Cancel" Command="{Binding CancelCommand}"
+                            IsVisible="{Binding IsBusy}" Padding="14,9"/>
+                    <Button Content="Rip  ▶" Command="{Binding StartCommand}"
+                            IsVisible="{Binding !IsBusy}"
+                            Background="{DynamicResource AccentBrush}" Foreground="White"
+                            FontWeight="SemiBold" Padding="22,9"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Body -->
+        <Grid ColumnDefinitions="*,340" Margin="20">
+
+                <!-- Left column -->
+                <Grid Grid.Column="0" Margin="0,0,16,0" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="16">
+
+                    <!-- Drop zone -->
+                    <Border Grid.Row="0" x:Name="DropZone" Height="150" CornerRadius="12"
+                            Background="{DynamicResource PanelBrush}"
+                            BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="1.5"
+                            DragDrop.AllowDrop="True">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                            <TextBlock Text="⤓" FontSize="34" HorizontalAlignment="Center" Foreground="{DynamicResource MutedBrush}"/>
+                            <TextBlock Text="Drag a VIDEO_TS folder here" HorizontalAlignment="Center" FontSize="15" FontWeight="Medium"/>
+                            <Button Content="Browse…" Click="OnBrowseSource" HorizontalAlignment="Center" Padding="14,7"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Grid.Row="1" Text="{Binding SourceSummary}" Foreground="{DynamicResource MutedBrush}"
+                               FontSize="12" TextWrapping="Wrap"
+                               IsVisible="{Binding SourceSummary, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+                    <!-- Title selection -->
+                    <StackPanel Grid.Row="2" Spacing="8" IsVisible="{Binding IsSourceValid}">
+                        <TextBlock Text="TITLE TO RIP" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/>
+                        <ComboBox ItemsSource="{Binding Titles}" SelectedItem="{Binding SelectedTitle}"
+                                  HorizontalAlignment="Stretch">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:DvdTitle">
+                                    <TextBlock Text="{Binding Display}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Text="The longest title (the main feature) is selected automatically."
+                                   FontSize="11.5" Foreground="{DynamicResource MutedBrush}"/>
+                        <Border Background="#0E1013" CornerRadius="6" Padding="10,8" Margin="0,2,0,0"
+                                BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="1">
+                            <TextBlock Text="{Binding ContentSummary}" FontSize="12" TextWrapping="Wrap"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Log - fills the remaining vertical space -->
+                    <Grid Grid.Row="3" RowDefinitions="Auto,*" RowSpacing="8" MinHeight="140">
+                        <TextBlock Grid.Row="0" Text="ACTIVITY" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/>
+                        <Border Grid.Row="1" Background="#0E1013" CornerRadius="8" BorderBrush="{DynamicResource PanelBorderBrush}"
+                                BorderThickness="1">
+                            <ScrollViewer x:Name="LogScroll" Padding="12">
+                                <SelectableTextBlock Text="{Binding LogText}" FontFamily="Menlo,monospace"
+                                                     FontSize="12" TextWrapping="Wrap"/>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <!-- Right column: options -->
+                <Border Grid.Column="1" Background="{DynamicResource PanelBrush}" CornerRadius="12"
+                        BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="1" Padding="18">
+                    <ScrollViewer>
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="OPTIONS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/>
+
+                        <!-- Output folder -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Output folder" FontWeight="Medium"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Grid.Column="0" Text="{Binding OutputFolder}" />
+                                <Button Grid.Column="1" Content="…" Click="OnBrowseOutput" Margin="8,0,0,0" Padding="12,0"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Base name -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="File name" FontWeight="Medium"/>
+                            <TextBox Text="{Binding OutputBaseName}"/>
+                        </StackPanel>
+
+                        <!-- Quality -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Quality" FontWeight="Medium"/>
+                            <ComboBox ItemsSource="{Binding Qualities}" SelectedItem="{Binding SelectedQuality}"
+                                      HorizontalAlignment="Stretch"/>
+                            <TextBlock Text="{Binding SelectedQuality.Blurb}" FontSize="11.5"
+                                       Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <!-- Output ratio (only for scope / wider-than-16:9 titles) -->
+                        <StackPanel Spacing="6" IsVisible="{Binding ShowShapeOptions}">
+                            <TextBlock Text="Output ratio" FontWeight="Medium"/>
+                            <ComboBox ItemsSource="{Binding ShapeOptions}" SelectedItem="{Binding SelectedShape}"
+                                      HorizontalAlignment="Stretch"/>
+                            <TextBlock Text="&quot;Fill screen&quot; permanently crops the left/right edges to remove the letterbox bars seen on a typical TV."
+                                       FontSize="11.5" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <!-- Formats -->
+                        <StackPanel Spacing="8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Grid.Column="0" Text="Output formats" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" Click="OnFormatInfo" ToolTip.Tip="Format differences"
+                                        Width="24" Height="24" Padding="0" CornerRadius="12"
+                                        Background="Transparent" BorderThickness="1"
+                                        BorderBrush="{DynamicResource PanelBorderBrush}">
+                                    <TextBlock Text="?" FontSize="13" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource MutedBrush}"/>
+                                </Button>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Spacing="24">
+                                <CheckBox IsChecked="{Binding ExportMkv}" Content="MKV"/>
+                                <CheckBox IsChecked="{Binding ExportMp4}" Content="MP4"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+    </DockPanel>
+</Window>

@@ -1,0 +1,29 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Riptastic.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+
+    <Application.Resources>
+        <!-- Override Fluent's default blue accent with pink (checkboxes, highlights, progress, focus, selection). -->
+        <Color x:Key="SystemAccentColor">#EC4899</Color>
+        <Color x:Key="SystemAccentColorLight1">#EF63A8</Color>
+        <Color x:Key="SystemAccentColorLight2">#F27FB8</Color>
+        <Color x:Key="SystemAccentColorLight3">#F59AC7</Color>
+        <Color x:Key="SystemAccentColorDark1">#D03F87</Color>
+        <Color x:Key="SystemAccentColorDark2">#B13673</Color>
+        <Color x:Key="SystemAccentColorDark3">#922D5F</Color>
+
+        <!-- App accent + panels -->
+        <Color x:Key="Accent">#EC4899</Color>
+        <SolidColorBrush x:Key="AccentBrush" Color="#EC4899" />
+        <SolidColorBrush x:Key="AccentBrushDim" Color="#D03F87" />
+        <SolidColorBrush x:Key="PanelBrush" Color="#1E2128" />
+        <SolidColorBrush x:Key="PanelBorderBrush" Color="#2E323C" />
+        <SolidColorBrush x:Key="MutedBrush" Color="#9AA0AB" />
+    </Application.Resources>
+
+</Application>

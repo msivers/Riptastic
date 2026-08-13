@@ -1,0 +1,42 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Riptastic.Views.FormatInfoWindow"
+        Width="460" Height="360"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#15171C"
+        Title="Format differences">
+
+    <DockPanel LastChildFill="True" Margin="22">
+
+        <TextBlock DockPanel.Dock="Top" Text="Format differences" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Content="Close" Click="OnClose" Padding="20,8"
+                    Background="{DynamicResource AccentBrush}" Foreground="White"/>
+        </StackPanel>
+
+        <StackPanel Spacing="14">
+            <Border Background="#0E1013" CornerRadius="8" Padding="14"
+                    BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="1">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="MKV" FontWeight="SemiBold" FontSize="14" Foreground="#7EE787"/>
+                    <TextBlock FontSize="12.5" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"
+                               Text="Keeps AC3 5.1 surround, every subtitle language, and chapters. Best for archiving. Plays in VLC / IINA / Plex."/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="#0E1013" CornerRadius="8" Padding="14"
+                    BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="1">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="MP4" FontWeight="SemiBold" FontSize="14" Foreground="#37AFFF"/>
+                    <TextBlock FontSize="12.5" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"
+                               Text="AAC stereo (default) + AC3 5.1, plus chapters. Plays everywhere - Apple TV, iPhone, browsers. No subtitles: MP4 can't hold DVD bitmap subs as selectable tracks."/>
+                </StackPanel>
+            </Border>
+
+            <TextBlock FontSize="12" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"
+                       Text="Selecting both encodes the video once and remuxes the MP4 from the MKV - no re-encode, no quality loss."/>
+        </StackPanel>
+    </DockPanel>
+</Window>

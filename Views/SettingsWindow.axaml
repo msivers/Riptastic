@@ -1,0 +1,84 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Riptastic.ViewModels"
+        xmlns:models="using:Riptastic.Models"
+        xmlns:conv="using:Riptastic.Views"
+        x:Class="Riptastic.Views.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Width="580" Height="560"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#15171C"
+        Title="Riptastic - Settings &amp; Dependencies">
+
+    <Window.Resources>
+        <conv:FoundToBrushConverter x:Key="FoundToBrush" />
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True" Margin="22">
+
+        <!-- Header -->
+        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,16">
+            <TextBlock Text="Dependencies" FontSize="18" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Footer -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right"
+                    Spacing="10" Margin="0,16,0,0">
+            <Button Content="Re-check" Command="{Binding RefreshCommand}" Padding="16,8"/>
+            <Button Content="Close" Click="OnClose" Padding="16,8"
+                    Background="{DynamicResource AccentBrush}" Foreground="White"/>
+        </StackPanel>
+
+        <TabControl>
+
+            <!-- External tools -->
+            <TabItem Header="External tools">
+                <ScrollViewer Margin="0,12,0,0">
+                    <ItemsControl ItemsSource="{Binding Dependencies}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:DependencyResult">
+                                <Border Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource PanelBorderBrush}"
+                                        BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="24,*">
+                                        <TextBlock Grid.Column="0" Text="{Binding StatusGlyph}" FontSize="16" FontWeight="Bold"
+                                                   VerticalAlignment="Top"
+                                                   Foreground="{Binding Found, Converter={StaticResource FoundToBrush}}"/>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding Purpose}" Foreground="{DynamicResource MutedBrush}"
+                                                       FontSize="12" TextWrapping="Wrap"/>
+                                            <SelectableTextBlock Text="{Binding DetailText}" FontSize="11.5"
+                                                                 FontFamily="Menlo,monospace" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- App & libraries -->
+            <TabItem Header="App &amp; libraries">
+                <Border Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource PanelBorderBrush}"
+                        BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,12,0,0" VerticalAlignment="Top">
+                    <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Riptastic version" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AppVersion}" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text=".NET runtime" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DotnetVersion}" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Avalonia UI" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding AvaloniaVersion}" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="MVVM" Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="CommunityToolkit.Mvvm 8.4.0" Margin="0,0,0,6"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Platform" Foreground="{DynamicResource MutedBrush}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="macOS (Homebrew for tool installs)"/>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+        </TabControl>
+    </DockPanel>
+</Window>

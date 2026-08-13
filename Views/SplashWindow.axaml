@@ -1,0 +1,93 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Riptastic.ViewModels"
+        xmlns:models="using:Riptastic.Models"
+        xmlns:conv="using:Riptastic.Views"
+        x:Class="Riptastic.Views.SplashWindow"
+        x:DataType="vm:SplashViewModel"
+        Width="400" Height="200"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="BorderOnly"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="#15171C"
+        Title="Riptastic">
+
+    <Window.Resources>
+        <conv:FoundToBrushConverter x:Key="FoundToBrush" />
+    </Window.Resources>
+
+    <Border Padding="28" CornerRadius="10">
+        <DockPanel LastChildFill="True">
+
+            <!-- Header -->
+            <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,18">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Border Width="40" Height="40" CornerRadius="9" Background="{DynamicResource AccentBrush}">
+                        <TextBlock Text="⏏" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Riptastic" FontSize="22" FontWeight="SemiBold"/>
+                        <TextBlock Text="VIDEO_TS → MKV / MP4" FontSize="12" Foreground="{DynamicResource MutedBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Footer buttons -->
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right"
+                        Spacing="10" Margin="0,16,0,0" IsVisible="{Binding HasProblems}">
+                <Button Content="Quit" Command="{Binding QuitCommand}" Padding="16,8"/>
+                <Button Content="Re-check" Command="{Binding RecheckCommand}" Padding="16,8"
+                        Background="{DynamicResource AccentBrush}" Foreground="White"/>
+            </StackPanel>
+
+            <!-- Body -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="14">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="{Binding HeaderText}" FontSize="16" FontWeight="Medium"/>
+                    <ProgressBar IsIndeterminate="True" Height="4" IsVisible="{Binding IsChecking}"/>
+                </StackPanel>
+                <TextBlock Text="{Binding SubText}" Foreground="{DynamicResource MutedBrush}"
+                           TextWrapping="Wrap" IsVisible="{Binding SubText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+                <ItemsControl ItemsSource="{Binding Dependencies}" Margin="0,4,0,0"
+                              IsVisible="{Binding HasProblems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:DependencyResult">
+                            <Border Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource PanelBorderBrush}"
+                                    BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
+                                <Grid ColumnDefinitions="24,*">
+                                    <TextBlock Grid.Column="0" Text="{Binding StatusGlyph}" FontSize="16" FontWeight="Bold"
+                                               VerticalAlignment="Top"
+                                               Foreground="{Binding Found, Converter={StaticResource FoundToBrush}}"/>
+                                    <StackPanel Grid.Column="1" Spacing="2">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Purpose}" Foreground="{DynamicResource MutedBrush}"
+                                                   FontSize="12" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding DetailText}" FontSize="11.5" FontFamily="Menlo,monospace"
+                                                   TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Install-all command -->
+                <Border IsVisible="{Binding HasProblems}" Background="#0E1013" CornerRadius="8"
+                        BorderBrush="{DynamicResource PanelBorderBrush}" BorderThickness="1" Padding="12,10">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Install what's missing" FontWeight="SemiBold" FontSize="12"/>
+                        <SelectableTextBlock Text="{Binding InstallAllCommand}" FontFamily="Menlo,monospace"
+                                             TextWrapping="Wrap" Foreground="#7EE787"/>
+                        <TextBlock IsVisible="{Binding HomebrewMissing}" TextWrapping="Wrap" FontSize="12"
+                                   Foreground="#E3B341"
+                                   Text="Homebrew isn't installed. Install it from https://brew.sh first, then run the command above."/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</Window>
