@@ -20,6 +20,8 @@ A small macOS app (Avalonia 12 / .NET 10) that rips a DVD `VIDEO_TS` folder to *
 **MKV** keeps AC3 5.1 surround, all subtitle languages, and chapters.
 **MP4** carries AAC stereo + AC3 5.1 and chapters for maximum device compatibility (no subtitles — MP4 can't hold DVD bitmap subs). When both are selected the video is encoded once and the MP4 is remuxed from it (no re-encode, no quality loss).
 
+<img width="400" alt="Dependency Checks" src="https://github.com/user-attachments/assets/41073b35-6749-4c2a-b47c-9ba287acadb5" /> <img width="400" alt="Formats Supported" src="https://github.com/user-attachments/assets/37bb1a39-8b8d-477e-ba9d-e02cbf1f2f80" />
+
 ## Requirements
 
 macOS with these tools (install via [Homebrew](https://brew.sh)):
