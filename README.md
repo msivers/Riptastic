@@ -28,7 +28,7 @@ macOS with these tools (install via [Homebrew](https://brew.sh)):
 brew install handbrake ffmpeg libdvdcss
 ```
 
-Plus the [.NET 10 SDK](https://dotnet.microsoft.com/download) to build.
+To build, you'll need the [.NET 10 SDK](https://dotnet.microsoft.com/download). The UI is built with the [Avalonia UI](https://avaloniaui.net) framework (v12), which is restored automatically from NuGet.
 
 ## Run
 
